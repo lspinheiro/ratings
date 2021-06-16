@@ -16,7 +16,15 @@ cdef class GlickoRating:
         return self.mu * self.glicko_scale + self.elo_scale
 
     cdef double get_rd(self):
-        return self.phi * self.glicko_scale        
+        return self.phi * self.glicko_scale
+    
+    @property
+    def rating(self):
+        return self.mu * self.glicko_scale + self.elo_scale
+    
+    @property
+    def rd(self):
+        return self.phi * self.glicko_scale
         
 
 cdef class Glicko2:
