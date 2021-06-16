@@ -1,8 +1,6 @@
-%%cython
-
 import math
 
-cdef class FighterRating:
+cdef class GlickoRating:
     cdef public double mu, phi, sigma
     cdef readonly double elo_scale
     cdef readonly double glicko_scale
@@ -32,7 +30,7 @@ cdef class Glicko2:
     def __getitem__(self, player: str) -> float:
         return self.rating_dict[player]
 
-    def __setitem__(self, fighter: str, fighter_rating: FighterRating) -> None:
+    def __setitem__(self, fighter: str, fighter_rating: GlickoRating) -> None:
         self.rating_dict[fighter] = fighter_rating
 
     def add_player(self, name: str, rating: float = 1500., ):
@@ -59,9 +57,7 @@ cdef class Glicko2:
         cdef double a = math.log(vol**2)
         
         cdef double A = math.log(vol**2)
-        cdef double B
-        cdef double k
-        cdef double b_check
+        cdef double B, k, b_check
         
         if Delta**2 > phi**2 + v:
             B = math.log(Delta**2 - phi**2 - v)
@@ -76,8 +72,7 @@ cdef class Glicko2:
             
         cdef double fA = check_fun(A)
         cdef double fB = check_fun(B)
-        cdef double C
-        cdef double fC
+        cdef double C, fC
         
         while abs(B - A) > tol:
             C = A + (A - B) * ( fA / (fB - fA))
@@ -97,8 +92,8 @@ cdef class Glicko2:
     def update_ratings(self, p1_name: str, p2_name: str, score: float) -> None:
         
         # Step 2
-        cdef FighterRating p1 = self.rating_dict[p1_name]
-        cdef FighterRating p2 = self.rating_dict[p2_name]
+        cdef GlickoRating p1 = self.rating_dict[p1_name]
+        cdef GlickoRating p2 = self.rating_dict[p2_name]
         
         # Step 3
         cdef double p1_g = self.get_g_factor(p1.phi)
